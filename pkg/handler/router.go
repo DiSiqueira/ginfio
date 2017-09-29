@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/disiqueira/ginfio/pkg/config"
 	"github.com/disiqueira/ginfio/pkg/web"
 	"github.com/julienschmidt/httprouter"
 )
@@ -14,11 +15,13 @@ type (
 	}
 )
 
-func Start(version string) {
+func Start(conf config.Reader, version string) {
 	jsonResponser := web.NewJSON()
 
+	getInfoHandler := NewGetInfoHandler(jsonResponser, conf, version)
+
 	router := httprouter.New()
-	router.GET("/", NewGetInfoHandler(jsonResponser, version).ServeHTTP)
+	router.GET("/", getInfoHandler.ServeHTTP)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

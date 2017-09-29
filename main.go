@@ -8,6 +8,10 @@ import (
 const version = "0.0.1"
 
 func main() {
-	config.Read()
-	handler.Start(version)
+	conf, err := config.New()
+	if err != nil {
+		panic(err)
+	}
+
+	handler.Start(conf, version)
 }
